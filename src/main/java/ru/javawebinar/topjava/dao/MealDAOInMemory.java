@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.dao;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
-import ru.javawebinar.topjava.web.InMemoryMealRepository;
 
 import java.time.LocalDateTime;
 import java.time.Month;
