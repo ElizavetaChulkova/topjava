@@ -18,12 +18,11 @@
 <ul>
 
     <form action = "meals?action=update&id=${meal.id}" method = "POST">
-        <dt>Date and time:</dt>
-        <dd><input type = "datetime-local" value="${meal.dateTime}" name = "dateTime"></dd>
-        <br />
-        Description: <dd><input type = "text" value="${meal.description}" name = "description" /></dd>
+        Date and time:<input type = "datetime-local" value="${meal.dateTime}" name = "dateTime">
         <br/>
-        Calories: <dd><input type="text" value="${meal.calories}" name="calories"/></dd>
+        Description: <input type = "text" value="${meal.description}" name = "description" />
+        <br/>
+        Calories: <input type="text" value="${meal.calories}" name="calories"/>
         <br/>
         <input type = "submit" value = "SAVE" />
         <button onclick="window.history.back()" type="button">Cancel</button>
