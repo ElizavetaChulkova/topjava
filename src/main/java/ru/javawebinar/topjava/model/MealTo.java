@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 public class MealTo {
     private Integer id;
+
     private final LocalDateTime dateTime;
 
     private final String description;
@@ -19,11 +20,9 @@ public class MealTo {
         this.calories = calories;
         this.excess = excess;
     }
+
     public MealTo(LocalDateTime dateTime, String description, int calories, boolean excess) {
-        this.dateTime = dateTime;
-        this.description = description;
-        this.calories = calories;
-        this.excess = excess;
+        this(null, dateTime, description, calories, excess);
     }
 
     public LocalDateTime getDateTime() {

@@ -1,15 +1,7 @@
-<%@ page import="ru.javawebinar.topjava.model.MealTo" %>
-<%@ page import="java.util.List" %>
-<%@ page import="ru.javawebinar.topjava.util.TimeUtil" %><%--
-  Created by IntelliJ IDEA.
-  User: chulk
-  Date: 04.02.2023
-  Time: 20:48
-  To change this template use File | Settings | File Templates.
---%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <html>
 <head>
     <title>Meals</title>
@@ -18,8 +10,7 @@
 <h3><a href="index.html">Home</a></h3>
 <hr>
 <h2>Meals</h2>
-
-<p><a href="create-update.jsp">Add Meal</a></p>
+<p><a href="meals?action=create">Add Meal</a></p>
 <style>
     .normal {color: green}
     .exceeded {color: red}
@@ -43,13 +34,11 @@
             </td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>
-            <td> <a href="meals?action=update&id=${meal.id}">Update</a></td>
+            <td> <a href="meals?action=edit&id=${meal.id}">Update</a></td>
             <td> <a href="meals?action=delete&id=${meal.id}">Delete</a></td>
         </tr>
     </c:forEach>
-
     </tbody>
 </table>
-
 </body>
 </html>
