@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.util;
 
-import ru.javawebinar.topjava.dao.InMemoryMealRepository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
 
@@ -15,6 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MealsUtil {
+    public static final int CALORIES_PER_DATE = 2000;
     public static void main(String[] args) {
         List<Meal> meals = Arrays.asList(
                 new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500),
@@ -30,11 +30,11 @@ public class MealsUtil {
         mealsTo.forEach(System.out::println);
     }
 
-    public static List<MealTo> getMealsWithExceeded(Collection<Meal> meals) {
-        return filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, InMemoryMealRepository.caloriesPerDay);
+    public static List<MealTo> getMealsWithExceeded(Collection<Meal> meals, int caloriesPerDay) {
+        return filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, caloriesPerDay);
     }
 
-    public static MealTo getMealToById(List<MealTo> meals, int id){
+    public static MealTo getMealToById(Collection<MealTo> meals, int id){
         return meals.stream().filter(meal -> meal.getId() == id).findAny().orElse(null);
     }
 

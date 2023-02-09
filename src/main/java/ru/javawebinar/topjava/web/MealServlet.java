@@ -29,23 +29,22 @@ public class MealServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
         if (action == null) {
-            log.info(LocalDateTime.now() + " Get the Meals table");
-            request.setAttribute("mealList", MealsUtil.getMealsWithExceeded(mealRepository.getAll()));
+            log.info("Get the Meals table");
+            request.setAttribute("mealList", MealsUtil.getMealsWithExceeded(mealRepository.getAll(), MealsUtil.CALORIES_PER_DATE));
             request.getRequestDispatcher("/meals.jsp").forward(request, response);
         }
         switch (action) {
             case "edit":
                 int id = Integer.parseInt(request.getParameter("id"));
-                log.info(LocalDateTime.now() + " Edit meal with id: " + id);
-                request.setAttribute("meal",
-                        MealsUtil.getMealToById(MealsUtil.getMealsWithExceeded(mealRepository.getAll()), id));
+                log.debug("Edit meal with id: {}", id);
+                request.setAttribute("meal", MealsUtil.getMealToById(MealsUtil.getMealsWithExceeded(mealRepository.getAll(), MealsUtil.CALORIES_PER_DATE), id));
                 request.getRequestDispatcher("/editMeal.jsp").forward(request, response);
                 break;
             case "delete":
                 id = Integer.parseInt(request.getParameter("id"));
-                log.info(LocalDateTime.now() + " Delete meal with id: " + id);
+                log.info("Delete meal with id: {}", id);
                 mealRepository.delete(id);
-                request.setAttribute("mealList", MealsUtil.getMealsWithExceeded(mealRepository.getAll()));
+                //request.setAttribute("mealList", MealsUtil.getMealsWithExceeded(mealRepository.getAll(), MealsUtil.CALORIES_PER_DATE));
                 response.sendRedirect("/topjava/meals");
                 break;
             case "create":
@@ -54,7 +53,7 @@ public class MealServlet extends HttpServlet {
                 break;
             default:
                 log.info(LocalDateTime.now() + " Get the Meals table");
-                request.setAttribute("mealList", MealsUtil.getMealsWithExceeded(mealRepository.getAll()));
+                request.setAttribute("mealList", MealsUtil.getMealsWithExceeded(mealRepository.getAll(), MealsUtil.CALORIES_PER_DATE));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
         }
     }
@@ -62,18 +61,15 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        String action = request.getParameter("action");
+        String id = request.getParameter("id");
         Meal meal = new Meal(LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"), Integer.parseInt(request.getParameter("calories")));
-        if (action.equals("create")) {
+        if (id.isEmpty() || id.equals(null)) {
             mealRepository.create(meal);
-        }
-        if (action.equals("edit")) {
-            String id = request.getParameter("id");
+        } else {
             meal.setId(Integer.parseInt(id));
             mealRepository.edit(meal);
         }
-        request.setAttribute("mealList", MealsUtil.getMealsWithExceeded(mealRepository.getAll()));
         response.sendRedirect("/topjava/meals");
     }
 }

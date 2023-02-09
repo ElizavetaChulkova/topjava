@@ -1,6 +1,5 @@
 <%@ page import="java.time.LocalDateTime" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
 <html>
 <head>
     <title>CreateMeal</title>
@@ -12,6 +11,7 @@
 <ul>
 
   <form action = "meals?action=create" method = "POST">
+    <input type="hidden" name="id" value="${meal.id}">
     Date and time:<input type = "datetime-local" value="<%=LocalDateTime.now()%>" name = "dateTime" required>
     <br/>
     Description: <input type = "text" name = "description" required/>
