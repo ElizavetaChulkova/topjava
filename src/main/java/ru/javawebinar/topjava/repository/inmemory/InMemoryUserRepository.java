@@ -16,8 +16,6 @@ import java.util.stream.Collectors;
 public class InMemoryUserRepository implements UserRepository {
     private final Map<Integer, User> repository = new ConcurrentHashMap<>();
 
-    //private final Map<String, User> emailRepository = new ConcurrentHashMap<>();
-
     private final AtomicInteger counter = new AtomicInteger(0);
 
     private static final Logger log = LoggerFactory.getLogger(InMemoryUserRepository.class);
