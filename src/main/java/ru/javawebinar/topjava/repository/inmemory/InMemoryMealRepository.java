@@ -60,10 +60,11 @@ public class InMemoryMealRepository implements MealRepository {
 
     public static Collection<Meal> filterByDate(LocalDate startDate, LocalDate endDate, int userId){
         InMemoryMealRepository mealRepository = new InMemoryMealRepository();
-        Objects.requireNonNull(startDate);
         return mealRepository.getAll(userId).stream().
                 filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDate(),
-                        startDate, endDate)).sorted(comparator)
+                        (startDate == null) ? LocalDate.MIN : startDate,
+                        (endDate == null) ? LocalDate.MAX : endDate))
+                .sorted(comparator)
                 .collect(Collectors.toList());
     }
 }

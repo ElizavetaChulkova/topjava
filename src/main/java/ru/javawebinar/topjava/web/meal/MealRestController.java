@@ -13,6 +13,7 @@ import ru.javawebinar.topjava.web.SecurityUtil;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
@@ -57,8 +58,10 @@ public class MealRestController {
 
     public List<MealTo> getBetweenDateTime(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime){
         log.info("get all between dates {} - {} and time {} - {}", startDate, endDate, startTime, endTime);
-        return MealsUtil.getFilteredTos(InMemoryMealRepository.filterByDate(startDate, endDate, SecurityUtil.authUserId()),
-                SecurityUtil.authUserCaloriesPerDay(), startTime, endTime);
+        List<MealTo> resultList = MealsUtil.getFilteredTos(InMemoryMealRepository.filterByDate(startDate, endDate, SecurityUtil.authUserId()),
+                SecurityUtil.authUserCaloriesPerDay(), (startTime == null) ? LocalTime.MIN : startTime,
+                (endTime == null) ? LocalTime.MAX : endTime);
+        return (resultList == null) ? Collections.emptyList() : resultList;
 
     }
 }

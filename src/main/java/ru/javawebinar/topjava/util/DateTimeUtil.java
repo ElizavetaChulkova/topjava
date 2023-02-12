@@ -11,12 +11,20 @@ public class DateTimeUtil {
     public static boolean isBetweenHalfOpen(LocalDate lt, LocalDate startTime, LocalDate endTime) {
         return lt.compareTo(startTime) >= 0 && lt.compareTo(endTime) < 0;
     }
+
     public static boolean isBetweenHalfOpen(LocalTime lt, LocalTime startTime, LocalTime endTime) {
         return lt.compareTo(startTime) >= 0 && lt.compareTo(endTime) < 0;
     }
 
     public static String toString(LocalDateTime ldt) {
         return ldt == null ? "" : ldt.format(DATE_TIME_FORMATTER);
+    }
+
+    public static LocalDate parseDate(String date, LocalDate defaultDate){
+        return date.isEmpty() ? defaultDate : LocalDate.parse(date);
+    }
+    public static LocalTime parseTime(String time, LocalTime defaultTime){
+        return time.isEmpty() ? defaultTime : LocalTime.parse(time);
     }
 }
 
