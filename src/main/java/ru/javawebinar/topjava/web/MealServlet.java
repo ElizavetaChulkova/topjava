@@ -42,12 +42,11 @@ public class MealServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
         String action = request.getParameter("action");
-        if (action == null){
+        if (action == null) {
             Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
                     LocalDateTime.parse(request.getParameter("dateTime")),
                     request.getParameter("description"),
                     Integer.parseInt(request.getParameter("calories")));
-
             log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
             if (meal.isNew()) {
                 mealRestController.create(meal);
@@ -70,7 +69,6 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-
         switch (action == null ? "all" : action) {
             case "delete":
                 int id = getId(request);
@@ -86,7 +84,6 @@ public class MealServlet extends HttpServlet {
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
-
             case "all":
             default:
                 log.info("getAll");
