@@ -4,15 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,7 +21,8 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 @Controller
 public class MealRestController {
     private final MealService service;
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     public MealRestController(MealService service) {
         this.service = service;
@@ -30,7 +30,7 @@ public class MealRestController {
 
     public List<MealTo> getAll() {
         log.info("getAll");
-        return MealsUtil.getTos(new ArrayList<>(service.getAll(SecurityUtil.authUserId())),
+        return MealsUtil.getTos(service.getAll(SecurityUtil.authUserId()),
                 SecurityUtil.authUserCaloriesPerDay());
     }
 
@@ -56,12 +56,9 @@ public class MealRestController {
         service.update(meal, SecurityUtil.authUserId());
     }
 
-    public List<MealTo> getBetweenDateTime(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime){
-        log.info("get all between dates {} - {} and time {} - {}", startDate, endDate, startTime, endTime);
-        List<MealTo> resultList = MealsUtil.getFilteredTos(InMemoryMealRepository.filterByDate(startDate, endDate, SecurityUtil.authUserId()),
-                SecurityUtil.authUserCaloriesPerDay(), (startTime == null) ? LocalTime.MIN : startTime,
-                (endTime == null) ? LocalTime.MAX : endTime);
+    public List<MealTo> getBetweenDateTime(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+        List<MealTo> resultList = MealsUtil.getFilteredTos(service.filterByDate(startDate, endDate, SecurityUtil.authUserId()),
+                SecurityUtil.authUserCaloriesPerDay(), startTime, DateTimeUtil.parseTimeToMax(endTime));
         return (resultList == null) ? Collections.emptyList() : resultList;
-
     }
 }

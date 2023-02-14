@@ -8,23 +8,33 @@ import java.time.format.DateTimeFormatter;
 public class DateTimeUtil {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public static boolean isBetweenHalfOpen(LocalDate lt, LocalDate startTime, LocalDate endTime) {
-        return lt.compareTo(startTime) >= 0 && lt.compareTo(endTime) < 0;
-    }
-
-    public static boolean isBetweenHalfOpen(LocalTime lt, LocalTime startTime, LocalTime endTime) {
-        return lt.compareTo(startTime) >= 0 && lt.compareTo(endTime) < 0;
+    public static <T extends Comparable<T>> boolean isBetweenHalfOpen(T lt, T start, T end) {
+        return lt.compareTo(start) >= 0 && lt.compareTo(end) < 0;
     }
 
     public static String toString(LocalDateTime ldt) {
         return ldt == null ? "" : ldt.format(DATE_TIME_FORMATTER);
     }
 
-    public static LocalDate parseDate(String date, LocalDate defaultDate){
-        return date.isEmpty() ? defaultDate : LocalDate.parse(date);
+    public static LocalDate parseDate(String date) {
+        return date.isEmpty() ? LocalDate.MIN : LocalDate.parse(date);
     }
-    public static LocalTime parseTime(String time, LocalTime defaultTime){
-        return time.isEmpty() ? defaultTime : LocalTime.parse(time);
+
+    public static LocalTime parseTime(String time) {
+        return time.isEmpty() ? LocalTime.MIN : LocalTime.parse(time);
+    }
+
+    public static LocalTime parseTimeToMax(LocalTime time) {
+        return time == LocalTime.MIN ? LocalTime.MAX : time;
+    }
+
+    public static LocalDateTime parseDateToMin(LocalDate date) {
+        return date == LocalDate.MIN ? LocalDateTime.of(LocalDate.MIN, LocalTime.MIN) : date.atStartOfDay();
+    }
+
+    public static LocalDateTime parseDateToMax(LocalDate date) {
+        return date == LocalDate.MIN ? LocalDateTime.of(LocalDate.MAX, LocalTime.MAX) :
+                date.plusDays(1).atStartOfDay();
     }
 }
 
