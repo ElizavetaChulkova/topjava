@@ -6,13 +6,11 @@ import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Collections;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
@@ -57,8 +55,10 @@ public class MealRestController {
     }
 
     public List<MealTo> getBetweenDateTime(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
-        List<MealTo> resultList = MealsUtil.getFilteredTos(service.filterByDate(startDate, endDate, SecurityUtil.authUserId()),
-                SecurityUtil.authUserCaloriesPerDay(), startTime, DateTimeUtil.parseTimeToMax(endTime));
-        return (resultList == null) ? Collections.emptyList() : resultList;
+        return MealsUtil.getFilteredTos(service.filterByDate((startDate == null) ? LocalDate.MIN : startDate,
+                        (endDate == null) ? LocalDate.MAX : endDate.plusDays(1), SecurityUtil.authUserId()),
+                SecurityUtil.authUserCaloriesPerDay(),
+                (startTime == null) ? LocalTime.MIN : startTime,
+                (endTime == null) ? LocalTime.MAX : endTime);
     }
 }

@@ -22,7 +22,7 @@
     <hr/>
     <br>
 
-    <form method="get" action="meals?action=filter">
+    <form method="get" action="meals">
         <input type="hidden" name="action" value="filter">
         <dl>
             <dt>From date:</dt>

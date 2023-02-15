@@ -3,8 +3,10 @@ package ru.javawebinar.topjava.repository.inmemory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Collections;
@@ -34,8 +36,10 @@ public class InMemoryMealRepository implements MealRepository {
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
             userMeals.put(meal.getId(), meal);
+        } else if (!meal.isNew()) {
+            if (userMeals.get(meal.getId()) == null) return null;
+            else userMeals.put(meal.getId(), meal);
         }
-        userMeals.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
         return meal;
     }
 
@@ -57,6 +61,15 @@ public class InMemoryMealRepository implements MealRepository {
         return userMeals == null ? Collections.emptyList() :
                 userMeals.values().stream()
                         .sorted(Comparator.comparing(Meal::getDateTime).reversed()).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Meal> getFilteredByDate(LocalDate startDate, LocalDate endDate, int userId) {
+        return getAll(userId).stream()
+                .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDate(),
+                        startDate,
+                        endDate))
+                .collect(Collectors.toList());
     }
 }
 

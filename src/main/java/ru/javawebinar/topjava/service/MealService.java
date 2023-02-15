@@ -3,13 +3,9 @@ package ru.javawebinar.topjava.service;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.DateTimeUtil;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 
@@ -34,7 +30,7 @@ public class MealService {
     }
 
     public List<Meal> getAll(int userId) {
-        return new ArrayList<>(repository.getAll(userId));
+        return repository.getAll(userId);
     }
 
     public void update(Meal meal, int userId) {
@@ -42,11 +38,6 @@ public class MealService {
     }
 
     public List<Meal> filterByDate(LocalDate startDate, LocalDate endDate, int userId) {
-        return repository.getAll(userId).stream()
-                .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDateTime(),
-                        DateTimeUtil.parseDateToMin(startDate),
-                        DateTimeUtil.parseDateToMax(endDate)))
-                .sorted(Comparator.comparing(Meal::getDate).reversed())
-                .collect(Collectors.toList());
+        return repository.getFilteredByDate(startDate, endDate, userId);
     }
 }
