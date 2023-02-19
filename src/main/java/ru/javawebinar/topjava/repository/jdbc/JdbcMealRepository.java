@@ -2,32 +2,48 @@ package ru.javawebinar.topjava.repository.jdbc;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 public class JdbcMealRepository implements MealRepository {
+    private static final BeanPropertyRowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
+
     private final JdbcTemplate jdbcTemplate;
 
-    public JdbcMealRepository(JdbcTemplate jdbcTemplate) {
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    private final SimpleJdbcInsert insertMeal;
+
+    public JdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        this.insertMeal = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("meals")
+                .usingGeneratedKeyColumns("id");
         this.jdbcTemplate = jdbcTemplate;
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     @Override
     public Meal save(Meal meal, int userId) {
+        MapSqlParameterSource map = new MapSqlParameterSource()
+                .addValue("id", meal.getId())
+                .addValue("description", meal.getDescription())
+                .addValue("calories", meal.getCalories())
+                .addValue("date_time", meal.getDateTime())
+                .addValue("user_id", userId);
         if (meal.isNew()) {
-            jdbcTemplate.update("INSERT INTO meals (date_time, description, calories, user_id) VALUES (?, ?, ?, ?)",
-                    meal.getDateTime(), meal.getDescription(), meal.getCalories(), userId);
-        } else {
-            jdbcTemplate.update("UPDATE meals SET date_time=?, description=?, calories=? WHERE id=? and user_id=?",
-                    meal.getDateTime(), meal.getDescription(), meal.getCalories(), meal.getId(), userId);
-        }
+            Number newKey = insertMeal.executeAndReturnKey(map);
+            meal.setId(newKey.intValue());
+        } else if (namedParameterJdbcTemplate.update("UPDATE meals " +
+                "SET date_time=:date_time, description=:description, calories=:calories WHERE id=:id and user_id=user_id", map) == 0)
+            return null;
         return meal;
     }
 
@@ -39,20 +55,17 @@ public class JdbcMealRepository implements MealRepository {
     @Override
     public Meal get(int id, int userId) {
         return jdbcTemplate.query("SELECT * FROM meals WHERE id=? and user_id=?",
-                new BeanPropertyRowMapper<>(Meal.class), new Object[]{id, userId}).stream().findAny().orElse(null);
+                ROW_MAPPER, new Object[]{id, userId}).stream().findAny().orElse(null);
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id=?",
-                new BeanPropertyRowMapper<>(Meal.class), userId)
-                .stream().sorted(Comparator.comparing(Meal::getDateTime).reversed()).collect(Collectors.toList());
+        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id=? ORDER BY date_time DESC", ROW_MAPPER, userId);
     }
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        return jdbcTemplate.query("SELECT * FROM meals WHERE (date_time >= ? and date_time < ?) and user_id =?",
-                new BeanPropertyRowMapper<>(Meal.class), startDateTime, endDateTime, userId)
-                .stream().sorted(Comparator.comparing(Meal::getDateTime).reversed()).collect(Collectors.toList());
+        return jdbcTemplate.query("SELECT * FROM meals WHERE (date_time >= ? and date_time < ?) and user_id =? " +
+                "ORDER BY date_time DESC", ROW_MAPPER, startDateTime, endDateTime, userId);
     }
 }
