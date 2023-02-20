@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -54,8 +55,9 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-        return jdbcTemplate.query("SELECT * FROM meals WHERE id=? and user_id=?",
-                ROW_MAPPER, new Object[]{id, userId}).stream().findAny().orElse(null);
+        List<Meal> mealList = jdbcTemplate.query("SELECT * FROM meals WHERE id=? and user_id=?",
+                ROW_MAPPER, id, userId);
+        return DataAccessUtils.singleResult(mealList);
     }
 
     @Override
