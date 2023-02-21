@@ -74,7 +74,7 @@ public class MealServiceTest {
 
     @Test
     public void getAll() {
-        assertMatch(mealService.getAll(USER_ID), testMeals);
+        assertMatch(mealService.getAll(USER_ID), userMeals);
     }
 
     @Test
@@ -88,6 +88,13 @@ public class MealServiceTest {
     public void updateWrongOwner() {
         assertThrows(Exception.class, () -> mealService.update(userMeal1, ADMIN_ID));
     }
+
+//    @Test
+//    public void updateWrongOwner() {
+//        Meal meal = new Meal(userMeal1.getId(), LocalDateTime.of(2020, Month.JANUARY, 31, 13, 15), "updated by admin", 123);
+//        assertThrows(NotFoundException.class, () -> mealService.update(meal, ADMIN_ID));
+//        assertMatch(mealService.get(userMeal1.getId(), USER_ID), userMeal1);
+//    }
 
     @Test
     public void create() {
@@ -108,6 +115,6 @@ public class MealServiceTest {
     @Test
     public void filterWithNullParameters() {
         assertMatch(mealService.getBetweenInclusive(null, null, USER_ID),
-                testMeals);
+                userMeals);
     }
 }
