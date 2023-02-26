@@ -33,7 +33,6 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 })
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-//@Ignore
 public class MealServiceTest {
     public static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
 
@@ -45,27 +44,21 @@ public class MealServiceTest {
     @Rule
     public final TestRule watch = new Stopwatch() {
         @Override
-        protected void succeeded(long nanos, Description description) {
+        protected void finished(long nanos, Description description) {
             report(nanos, description);
         }
 
-        @Override
-        protected void failed(long nanos, Throwable ex, Description description) {
-            report(nanos, description);
+        private void report(long nanos, Description description) {
+            String testName = description.getMethodName();
+            long duration = TimeUnit.NANOSECONDS.toMillis(nanos);
+            String formattedOutput = String.format("%1$-25s%2$-3d ms\n", testName, duration);
+            testingResults.append(formattedOutput);
         }
     };
 
-    private static void report(long nanos, Description description) {
-        String testName = description.getMethodName();
-        long duration = TimeUnit.NANOSECONDS.toMicros(nanos);
-        testingResults.append(testName).append("\t duration:").append(duration).append("ms\n");
-        log.info(String.valueOf(testingResults));
-    }
-
     @AfterClass
     public static void logTestReport() {
-        log.info("\n Testing Results \n");
-        log.info(String.valueOf(testingResults));
+        log.info("\n***** TEST OPERATION RESULTS *****\n" + testingResults);
     }
 
     @Test
