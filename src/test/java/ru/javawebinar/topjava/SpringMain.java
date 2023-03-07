@@ -17,8 +17,9 @@ import java.util.List;
 public class SpringMain {
     public static void main(String[] args) {
         // java 7 automatic resource management (ARM)
-        try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/inmemory.xml")) {
-            appCtx.getEnvironment().setActiveProfiles("hsqldb", "datajpa");
+        System.setProperty("spring.profiles.active", "hsqldb,datajpa");
+        try (ConfigurableApplicationContext appCtx =
+                     new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/spring-db.xml")) {
             appCtx.refresh();
 
             System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
