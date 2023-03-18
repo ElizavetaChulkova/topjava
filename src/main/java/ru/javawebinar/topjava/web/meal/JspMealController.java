@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.web.meal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
@@ -36,16 +37,9 @@ public class JspMealController extends AbstractMealController {
         return "meals";
     }
 
-    @GetMapping("/new")
-    public String newMeal(Model model) {
-        model.addAttribute("meal", new Meal());
-        model.addAttribute("method", "POST");
-        return "mealForm";
-    }
-
-    @DeleteMapping("/{id}/delete")
-    public String delete(@PathVariable Integer id) {
-        super.delete(id);
+    @GetMapping("/{id}/delete")
+    public String delete(@PathVariable String id) {
+        super.delete(Integer.parseInt(id));
         return "redirect:/meals";
     }
 
@@ -59,11 +53,11 @@ public class JspMealController extends AbstractMealController {
         return "/meals";
     }
 
-    @PostMapping()
-    public String create(HttpServletRequest request) {
-        final Meal meal = getMealFromRequest(request);
-        super.create(meal);
-        return "redirect:/meals";
+    @GetMapping("/new")
+    public String newMeal(Model model) {
+        model.addAttribute("meal", new Meal());
+        model.addAttribute("method", "POST");
+        return "mealForm";
     }
 
     @GetMapping("/{id}/update")
@@ -72,9 +66,13 @@ public class JspMealController extends AbstractMealController {
         return "mealForm";
     }
 
-    @PutMapping("/{id}")
-    public String update(HttpServletRequest request, @PathVariable("id") int id) {
-        super.update(getMealFromRequest(request), id);
+    @PostMapping
+    public String createOrUpdate(HttpServletRequest request) {
+        if (StringUtils.hasLength(request.getParameter("id"))) {
+            super.update(getMealFromRequest(request), Integer.parseInt(request.getParameter("id")));
+        } else {
+            super.create(getMealFromRequest(request));
+        }
         return "redirect:/meals";
     }
 

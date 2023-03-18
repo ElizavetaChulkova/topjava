@@ -61,7 +61,7 @@
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
                 <td><a href="${pageContext.request.contextPath}/meals/${meal.id}/update"><spring:message code="app.update"/></a></td>
-                <td><a href=""${pageContext.request.contextPath}/meals/${meal.id}/delete""><spring:message code="app.delete"/></a></td>
+                <td><a href="${pageContext.request.contextPath}/meals/${meal.id}/delete"><spring:message code="app.delete"/></a></td>
             </tr>
         </c:forEach>
     </table>
