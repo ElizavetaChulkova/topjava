@@ -19,18 +19,26 @@ import java.util.Set;
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.UserTestData.*;
 
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Autowired
     protected UserService service;
 
-    @Autowired
-    private CacheManager cacheManager;
+//    @Autowired
+//    private CacheManager cacheManager;
+//
+//    @Before
+//    public void evictAllCaches() {
+//        for (String name : cacheManager.getCacheNames()) {
+//            cacheManager.getCache(name).clear();
+//        }
+//    }
 
-    @Before
-    public void setup() {
-        cacheManager.getCache("users").clear();
-    }
+//    @Before
+//    public void setup() {
+//        cacheManager.getCache("users").clear();
+//    }
 
     @Test
     public void create() {
