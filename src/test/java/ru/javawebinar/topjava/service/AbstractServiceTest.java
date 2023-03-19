@@ -13,6 +13,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.ActiveDbProfileResolver;
+import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.TimingRules;
 
 import java.util.List;
@@ -50,6 +51,6 @@ public abstract class AbstractServiceTest {
     }
 
     protected boolean isJdbcProfileActive() {
-        return List.of(env.getActiveProfiles()).contains("jdbc");
+        return List.of(env.getActiveProfiles()).contains(Profiles.JDBC);
     }
 }

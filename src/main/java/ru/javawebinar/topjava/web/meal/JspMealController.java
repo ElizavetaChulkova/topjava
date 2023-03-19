@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalDate;
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
@@ -26,7 +27,7 @@ public class JspMealController extends AbstractMealController {
     }
 
     @GetMapping
-    public String getMeals(Model model) {
+    public String getAll(Model model) {
         model.addAttribute("meals", super.getAll());
         return "meals";
     }
@@ -38,8 +39,8 @@ public class JspMealController extends AbstractMealController {
     }
 
     @GetMapping("/{id}/delete")
-    public String delete(@PathVariable String id) {
-        super.delete(Integer.parseInt(id));
+    public String deleteById(@PathVariable("id") int id) {
+        super.delete(id);
         return "redirect:/meals";
     }
 
@@ -54,14 +55,13 @@ public class JspMealController extends AbstractMealController {
     }
 
     @GetMapping("/new")
-    public String newMeal(Model model) {
-        model.addAttribute("meal", new Meal());
-        model.addAttribute("method", "POST");
+    public String addNew(Model model) {
+        model.addAttribute("meal", new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 100));
         return "mealForm";
     }
 
     @GetMapping("/{id}/update")
-    public String updateMeal(Model model, @PathVariable("id") int id) {
+    public String update(Model model, @PathVariable("id") int id) {
         model.addAttribute("meal", super.get(id));
         return "mealForm";
     }
@@ -69,14 +69,14 @@ public class JspMealController extends AbstractMealController {
     @PostMapping
     public String createOrUpdate(HttpServletRequest request) {
         if (StringUtils.hasLength(request.getParameter("id"))) {
-            super.update(getMealFromRequest(request), Integer.parseInt(request.getParameter("id")));
+            super.update(getFromRequest(request), Integer.parseInt(request.getParameter("id")));
         } else {
-            super.create(getMealFromRequest(request));
+            super.create(getFromRequest(request));
         }
         return "redirect:/meals";
     }
 
-    private Meal getMealFromRequest(HttpServletRequest request) {
+    private Meal getFromRequest(HttpServletRequest request) {
         return new Meal(LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
