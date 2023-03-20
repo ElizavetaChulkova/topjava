@@ -1,21 +1,21 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<base href="http://localhost:8080/topjava/">
 
 <html>
-<body>
 <head>
+    <base href="${pageContext.request.contextPath}/">
+</head>
+<body>
     <jsp:include page="fragments/bodyHeader.jsp"/>
     <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
-</head>
-
 <section>
     <hr>
-    <h2><spring:message code="${method.equals('POST')  ? 'meal.create' : 'meal.edit'}"/></h2>
+    <h2><spring:message code="${method.equals('POST') ? 'meal.create' : 'meal.edit'}"/></h2>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
     <form method="post" action="meals">
         <input type="hidden" name="id" value="${meal.id}">
+        <input type="hidden" name="_method" value="${method}">
         <dl>
             <dt><spring:message code="meal.dateTime"/></dt>
             <dd><input type="datetime-local" value="${meal.dateTime}" name="dateTime" required></dd>
