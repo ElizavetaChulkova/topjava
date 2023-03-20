@@ -3,16 +3,12 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://topjava.javawebinar.ru/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<base href="http://localhost:8080/topjava/">
+
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
-<head>
-    <title><spring:message code="meal.title"/></title>
-    <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
-</head>
 <body>
 <jsp:include page="fragments/bodyHeader.jsp"/>
-
+<link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
 <section>
     <hr/>
     <h2><spring:message code="meal.title"/></h2>

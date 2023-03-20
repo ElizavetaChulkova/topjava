@@ -32,9 +32,9 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void createAdmin() {
-        User created = service.create(admin);
+        User created = service.create(getNewAdmin());
         int newId = created.id();
-        User newUser = admin;
+        User newUser = getNewAdmin();
         newUser.setId(newId);
         USER_MATCHER.assertMatch(created, newUser);
         USER_MATCHER.assertMatch(service.get(newId), newUser);
@@ -42,9 +42,9 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void createGuest() {
-        User created = service.create(guest);
+        User created = service.create(getNewGuest());
         int newId = created.id();
-        User newUser = guest;
+        User newUser = getNewGuest();
         newUser.setId(newId);
         USER_MATCHER.assertMatch(created, newUser);
         USER_MATCHER.assertMatch(service.get(newId), newUser);
