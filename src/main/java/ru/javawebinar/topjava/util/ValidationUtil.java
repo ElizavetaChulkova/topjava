@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class ValidationUtil {
 
-    public static Validator validator;
+    private static final Validator validator;
 
     private ValidationUtil() {
     }

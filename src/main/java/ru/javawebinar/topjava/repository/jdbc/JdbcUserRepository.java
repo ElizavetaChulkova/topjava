@@ -70,14 +70,6 @@ public class JdbcUserRepository implements UserRepository {
         }
     }
 
-    public User setRole(User user) {
-        if (user != null) {
-            user.setRoles(jdbcTemplate.queryForList("SELECT role FROM user_role WHERE user_id=?",
-                    Role.class, user.getId()));
-        }
-        return user;
-    }
-
     @Transactional
     @Override
     public boolean delete(int id) {
@@ -86,18 +78,14 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public User get(int id) {
-        List<User> users = jdbcTemplate
-                .query("SELECT * FROM users u LEFT JOIN user_role r ON u.id = r.user_id WHERE user_id=?",
-                        ROW_MAPPER, id);
+        List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE id=?", ROW_MAPPER, id);
         return setRole(DataAccessUtils.singleResult(users));
     }
 
     @Override
     public User getByEmail(String email) {
 //        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
-        List<User> users = jdbcTemplate
-                .query("SELECT * FROM users u LEFT JOIN user_role r ON u.id = r.user_id WHERE email=?",
-                        ROW_MAPPER, email);
+        List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
         return setRole(DataAccessUtils.singleResult(users));
     }
 
@@ -106,10 +94,18 @@ public class JdbcUserRepository implements UserRepository {
         List<User> users = jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
         Map<Integer, Set<Role>> userRoles = new HashMap<>();
         jdbcTemplate.query("SELECT * FROM user_role", rse -> {
-            userRoles.put(rse.getInt("user_id"),
-                    EnumSet.of(Role.valueOf(rse.getString("role"))));
+            userRoles.computeIfAbsent(rse.getInt("user_id"), userId -> EnumSet.noneOf(Role.class))
+                    .add(Role.valueOf(rse.getString("role")));
         });
         users.forEach(u -> u.setRoles(userRoles.get(u.getId())));
         return users;
+    }
+
+    private User setRole(User user) {
+        if (user != null) {
+            user.setRoles(jdbcTemplate.queryForList("SELECT role FROM user_role WHERE user_id=?",
+                    Role.class, user.getId()));
+        }
+        return user;
     }
 }
