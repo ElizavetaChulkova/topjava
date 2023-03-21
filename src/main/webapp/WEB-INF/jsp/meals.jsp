@@ -10,6 +10,7 @@
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
 <section>
+    <title><spring:message code="meal.title"/></title>
     <hr/>
     <h2><spring:message code="meal.title"/></h2>
     <form method="get" action="meals/filter">
