@@ -33,15 +33,14 @@ class RootControllerTest extends AbstractControllerTest {
                         }
                 ));
     }
-
+//.andExpect(model().attribute("meals", MealsUtil.getTos(meals, MealsUtil.DEFAULT_CALORIES_PER_DAY)))
     @Test
     void getMeals() throws Exception {
         perform(get("/meals"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("meals"))
-                .andExpect(forwardedUrl("/WEB_INF/jsp/meals.jsp"))
-                .andExpect(model().attribute("meals", MealsUtil.getTos(meals, MealsUtil.DEFAULT_CALORIES_PER_DAY)))
+                .andExpect(forwardedUrl("/WEB-INF/jsp/meals.jsp"))
                 .andExpect(model().attribute("meals",
                         new AssertionMatcher<List<MealTo>>() {
                             @Override
