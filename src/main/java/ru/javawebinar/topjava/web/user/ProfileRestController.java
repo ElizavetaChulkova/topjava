@@ -4,13 +4,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.service.UserService;
 
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
 @RestController
 @RequestMapping(value = ProfileRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProfileRestController extends AbstractUserController {
+
+    public final UserService service;
     static final String REST_URL = "/rest/profile";
+
+    public ProfileRestController(UserService service) {
+        this.service = service;
+    }
 
     @GetMapping
     public User get() {
@@ -32,5 +39,10 @@ public class ProfileRestController extends AbstractUserController {
     @GetMapping("/text")
     public String testUTF() {
         return "Русский текст";
+    }
+
+    @GetMapping("/with-meals")
+    public User getWithMeals() {
+        return service.getWithMeals(authUserId());
     }
 }
