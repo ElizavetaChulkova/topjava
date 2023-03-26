@@ -33,7 +33,7 @@ class RootControllerTest extends AbstractControllerTest {
                         }
                 ));
     }
-//.andExpect(model().attribute("meals", MealsUtil.getTos(meals, MealsUtil.DEFAULT_CALORIES_PER_DAY)))
+
     @Test
     void getMeals() throws Exception {
         perform(get("/meals"))
