@@ -18,12 +18,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.MealTestData.*;
-import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
+import static ru.javawebinar.topjava.UserTestData.user;
 import static ru.javawebinar.topjava.util.MealsUtil.getTos;
 import static ru.javawebinar.topjava.web.meal.MealRestController.REST;
 
 class MealRestControllerTest extends AbstractControllerTest {
-
     @Autowired
     private MealService mealService;
 
@@ -33,7 +32,7 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MEAL_TO_MATCHER.contentJson(getTos(meals, DEFAULT_CALORIES_PER_DAY)));
+                .andExpect(MEAL_TO_MATCHER.contentJson(getTos(meals, user.getCaloriesPerDay())));
     }
 
     @Test
@@ -50,6 +49,7 @@ class MealRestControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.delete(REST + "/" + MEAL1_ID))
                 .andExpect(status().isNoContent())
                 .andDo(print());
+        MEAL_MATCHER.assertMatch(mealService.getAll(SecurityUtil.authUserId()), meal7, meal6, meal5, meal4, meal3, meal2);
     }
 
     @Test
@@ -86,6 +86,14 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MEAL_TO_MATCHER.contentJson(MealsUtil.getTos(List.of(meal7, meal6, meal5),
-                        SecurityUtil.authUserCaloriesPerDay())));
+                        user.getCaloriesPerDay())));
+    }
+
+    @Test
+    void getBetweenNullParams() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST + "/filter?startDate=&endTime="))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MEAL_TO_MATCHER.contentJson(getTos(meals, user.getCaloriesPerDay())));
     }
 }

@@ -32,16 +32,6 @@
         </property>
     </bean>
 
-    <!--
-    <bean class="org.springframework.format.support.FormattingConversionServiceFactoryBean" id="conversionService">
-        <property name="formatters">
-            <set>
-                <bean class="ru.javawebinar.topjava.web.DateTimeFormatter.LocalDateFormatter"/>
-                <bean class="ru.javawebinar.topjava.web.DateTimeFormatter.LocalTimeFormatter"/>
-            </set>
-        </property>
-    </bean>
--->
     <context:component-scan base-package="ru.javawebinar.**.web"/>
 
     <!--  all resources inside folder src/main/webapp/resources are mapped so they can be referred to inside JSP files -->
