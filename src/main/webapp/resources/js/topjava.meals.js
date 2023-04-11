@@ -1,15 +1,11 @@
-const mealAjaxUrl = "profile/meals/";
+var ctx, mealAjaxUrl = "profile/meals/";
 
-// https://stackoverflow.com/a/5064235/548473
-const ctx = {
-    ajaxUrl: mealAjaxUrl,
-    updateTable: function () {
-        $.ajax({
-            type: "GET",
-            url: mealAjaxUrl + "filter",
-            data: $("#filter").serialize()
-        }).done(updateTableByData);
-    }
+function updateFilteredTable() {
+    $.ajax({
+        type: "GET",
+        url: mealAjaxUrl + "filter",
+        data: $("#filter").serialize()
+    }).done(updateTableByData);
 }
 
 function clearFilter() {
@@ -18,13 +14,24 @@ function clearFilter() {
 }
 
 $(function () {
-    makeEditable(
-        $("#datatable").DataTable({
+    ctx = {
+        ajaxUrl: mealAjaxUrl,
+        datatableApi: $("#datatable").DataTable({
+            "ajax": {
+                "url": mealAjaxUrl,
+                "dataSrc": ""
+            },
             "paging": false,
             "info": true,
             "columns": [
                 {
-                    "data": "dateTime"
+                    "data": "dateTime",
+                    "render": function (data, type, row) {
+                        if (type === "display") {
+                            return data.replace('T', ' ').substring(0, 16);
+                        }
+                        return data;
+                    }
                 },
                 {
                     "data": "description"
@@ -34,11 +41,13 @@ $(function () {
                 },
                 {
                     "defaultContent": "Edit",
-                    "orderable": false
+                    "orderable": false,
+                    "render": renderEditBtn
                 },
                 {
                     "defaultContent": "Delete",
-                    "orderable": false
+                    "orderable": false,
+                    "render": renderDeleteBtn
                 }
             ],
             "order": [
@@ -46,7 +55,21 @@ $(function () {
                     0,
                     "desc"
                 ]
-            ]
+            ],
+            "createdRow": function (row, data) {
+                $(row).attr("data-meal-excess", data.excess);
+            }
         })
-    );
+    };
+    makeEditable();
+
+    $('#startDate, #endDate').datetimepicker({
+        timepicker: false,
+        format: 'Y-m-d'
+    });
+
+    $('#startTime, #endTime').datetimepicker({
+        datepicker: false,
+        format: 'H:m'
+    });
 });

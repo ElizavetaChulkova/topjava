@@ -1,7 +1,7 @@
 let form;
 
-function makeEditable(datatableApi) {
-    ctx.datatableApi = datatableApi;
+function makeEditable() {
+    // ctx.datatableApi = datatableApi;
     form = $('#detailsForm');
 
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
