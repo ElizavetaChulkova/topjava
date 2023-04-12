@@ -1,11 +1,15 @@
-var ctx, mealAjaxUrl = "profile/meals/";
+const mealAjaxUrl = "profile/meals/";
 
-function updateFilteredTable() {
-    $.ajax({
-        type: "GET",
-        url: mealAjaxUrl + "filter",
-        data: $("#filter").serialize()
-    }).done(updateTableByData);
+// https://stackoverflow.com/a/5064235/548473
+const ctx = {
+    ajaxUrl: mealAjaxUrl,
+    updateTable: function () {
+        $.ajax({
+            type: "GET",
+            url: mealAjaxUrl + "filter",
+            data: $("#filter").serialize()
+        }).done(updateTableByData);
+    }
 }
 
 function clearFilter() {
@@ -13,10 +17,25 @@ function clearFilter() {
     $.get(mealAjaxUrl, updateTableByData);
 }
 
+$.ajaxSetup({
+    converters: {
+        "text json": function (stringData) {
+            var json = JSON.parse(stringData);
+            if (typeof json === 'object') {
+                $(json).each(function () {
+                    if (this.hasOwnProperty('dateTime')) {
+                        this.dateTime = this.dateTime.substr(0, 16).replace('T', ' ');
+                    }
+                });
+            }
+            return json;
+        }
+    }
+});
+
 $(function () {
-    ctx = {
-        ajaxUrl: mealAjaxUrl,
-        datatableApi: $("#datatable").DataTable({
+    makeEditable(
+        $("#datatable").DataTable({
             "ajax": {
                 "url": mealAjaxUrl,
                 "dataSrc": ""
@@ -25,13 +44,7 @@ $(function () {
             "info": true,
             "columns": [
                 {
-                    "data": "dateTime",
-                    "render": function (data, type, row) {
-                        if (type === "display") {
-                            return data.replace('T', ' ').substring(0, 16);
-                        }
-                        return data;
-                    }
+                    "data": "dateTime"
                 },
                 {
                     "data": "description"
@@ -59,9 +72,7 @@ $(function () {
             "createdRow": function (row, data) {
                 $(row).attr("data-meal-excess", data.excess);
             }
-        })
-    };
-    makeEditable();
+        }))
 
     var startDate = $('#startDate');
     var endDate = $('#endDate');
