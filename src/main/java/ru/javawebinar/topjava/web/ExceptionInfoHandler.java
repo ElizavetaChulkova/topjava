@@ -49,6 +49,7 @@ public class ExceptionInfoHandler {
         return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR);
     }
 
+    //https://www.tabnine.com/code/java/classes/org.springframework.validation.FieldError
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     @ExceptionHandler({BindException.class})
     public ErrorInfo bindingError(HttpServletRequest req, BindException e) {
@@ -57,7 +58,7 @@ public class ExceptionInfoHandler {
             errors.append("[").append(error.getField()).append("] ")
                     .append(": ").append(error.getDefaultMessage()).append("\n");
         }
-        return new ErrorInfo(req.getRequestURL(), VALIDATION_ERROR, errors.toString());
+        return new ErrorInfo(req.getRequestURL(), VALIDATION_ERROR, VALIDATION_ERROR.getErrorMessage(), errors.toString());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -74,6 +75,6 @@ public class ExceptionInfoHandler {
         } else {
             log.warn("{} at request  {}: {}", errorType, req.getRequestURL(), rootCause.toString());
         }
-        return new ErrorInfo(req.getRequestURL(), errorType, rootCause.toString());
+        return new ErrorInfo(req.getRequestURL(), errorType, errorType.getErrorMessage(), rootCause.toString());
     }
 }
