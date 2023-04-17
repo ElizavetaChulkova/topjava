@@ -3,28 +3,26 @@ package ru.javawebinar.topjava.web.user;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.MessageSourceAccessor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindException;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
-import ru.javawebinar.topjava.util.exception.ErrorType;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
-import ru.javawebinar.topjava.web.ExceptionInfoHandler;
 
-import static org.apache.taglibs.standard.resources.Resources.getMessage;
+import java.util.Locale;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static ru.javawebinar.topjava.TestUtil.userHttpBasic;
 import static ru.javawebinar.topjava.UserTestData.*;
 import static ru.javawebinar.topjava.util.exception.ErrorType.VALIDATION_ERROR;
+import static ru.javawebinar.topjava.web.ExceptionInfoHandler.EXCEPTION_DUPLICATE_EMAIL;
 
 class AdminRestControllerTest extends AbstractControllerTest {
 
@@ -157,7 +155,8 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.type").value(VALIDATION_ERROR.name()))
-                .andExpect(jsonPath("$.detail").value(messageSourceAccessor.getMessage(ExceptionInfoHandler.EXCEPTION_DUPLICATE_EMAIL)));
+                .andExpect(jsonPath("$.detail")
+                        .value(messageSourceAccessor.getMessage(EXCEPTION_DUPLICATE_EMAIL, Locale.ENGLISH)));
     }
 
     @Test
@@ -172,7 +171,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.type").value(VALIDATION_ERROR.name()))
                 .andExpect(jsonPath("$.detail")
-                        .value(messageSourceAccessor.getMessage(ExceptionInfoHandler.EXCEPTION_DUPLICATE_EMAIL)));
+                        .value(messageSourceAccessor.getMessage(EXCEPTION_DUPLICATE_EMAIL, Locale.ENGLISH)));
     }
 
     @Test

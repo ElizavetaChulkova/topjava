@@ -35,7 +35,7 @@ public class ProfileUIController extends AbstractUserController {
 
     @GetMapping("/register")
     public String register(ModelMap model) {
-        model.addAttribute("userTo", new UserTo(null, "newName", "newemail@ya.ru", "newPassword", null));
+        model.addAttribute("userTo", new UserTo());
         model.addAttribute("register", true);
         return "profile";
     }

@@ -85,4 +85,10 @@
     <bean class="org.springframework.context.support.MessageSourceAccessor">
         <constructor-arg ref="messageSource"/>
     </bean>
+
+    <bean id="validator"
+          class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+
+    <bean id="emailValidator"
+          class="ru.javawebinar.topjava.web.EmailValidator"/>
 </beans>
