@@ -69,7 +69,7 @@
         <property name="basenames" value="file:///#{systemEnvironment[TOPJAVA_ROOT]}/config/messages/app"/>
         <property name="fallbackToSystemLocale" value="false"/>
     </bean>
-<!-- https://terasolunaorg.github.io/guideline/5.0.x/en/ArchitectureInDetail/Internationalization.html -->
+    <!-- https://terasolunaorg.github.io/guideline/5.0.x/en/ArchitectureInDetail/Internationalization.html -->
     <mvc:interceptors>
         <bean class="ru.javawebinar.topjava.web.interceptor.ModelInterceptor"/>
         <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
@@ -85,4 +85,17 @@
     <bean class="org.springframework.context.support.MessageSourceAccessor">
         <constructor-arg ref="messageSource"/>
     </bean>
+
+<!-- https://stackoverflow.com/questions/22334196/spring-4-hibernate-validator-localized-messages -->
+    <mvc:annotation-driven validator="validator">
+    </mvc:annotation-driven>
+
+    <bean name="validator"  class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="validationMessageSource">
+            <ref bean="messageSource"/>
+        </property>
+    </bean>
+
+    <bean id="emailValidator"
+          class="ru.javawebinar.topjava.web.EmailValidator"/>
 </beans>

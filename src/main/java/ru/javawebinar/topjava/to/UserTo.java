@@ -1,7 +1,9 @@
 package ru.javawebinar.topjava.to;
 
 import org.hibernate.validator.constraints.Range;
+import ru.javawebinar.topjava.model.AbstractNamedEntity;
 import ru.javawebinar.topjava.util.UsersUtil;
+import ru.javawebinar.topjava.web.HasIdAndEmail;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -10,12 +12,14 @@ import javax.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
 
-public class UserTo extends BaseTo implements Serializable {
+import static ru.javawebinar.topjava.model.User.PASSWORD_SIZE_EXCEPTION;
+
+public class UserTo extends BaseTo implements Serializable, HasIdAndEmail {
     @Serial
     private static final long serialVersionUID = 1L;
 
     @NotBlank
-    @Size(min = 2, max = 100)
+    @Size(min = 2, max = 100, message = AbstractNamedEntity.NAME_SIZE_EXCEPTION)
     private String name;
 
     @Email
@@ -24,7 +28,7 @@ public class UserTo extends BaseTo implements Serializable {
     private String email;
 
     @NotBlank
-    @Size(min = 5, max = 32, message = "length must be between 5 and 32 characters")
+    @Size(min = 5, max = 128, message = PASSWORD_SIZE_EXCEPTION)
     private String password;
 
     @Range(min = 10, max = 10000)

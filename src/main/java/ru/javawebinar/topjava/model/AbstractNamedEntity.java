@@ -9,8 +9,10 @@ import javax.validation.constraints.Size;
 @MappedSuperclass
 public abstract class AbstractNamedEntity extends AbstractBaseEntity {
 
+    public static final String NAME_SIZE_EXCEPTION = "{name.size}";
+
     @NotBlank
-    @Size(min = 2, max = 128)
+    @Size(min = 2, max = 128, message = NAME_SIZE_EXCEPTION)
     @Column(name = "name", nullable = false)
     protected String name;
 

@@ -6,6 +6,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.*;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.util.CollectionUtils;
+import ru.javawebinar.topjava.web.HasIdAndEmail;
 
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
@@ -29,11 +30,12 @@ import static ru.javawebinar.topjava.util.UsersUtil.DEFAULT_CALORIES_PER_DAY;
 })
 @Entity
 @Table(name = "users")
-public class User extends AbstractNamedEntity {
+public class User extends AbstractNamedEntity implements HasIdAndEmail {
 
     public static final String DELETE = "User.delete";
     public static final String BY_EMAIL = "User.getByEmail";
     public static final String ALL_SORTED = "User.getAllSorted";
+    public static final String PASSWORD_SIZE_EXCEPTION = "{password.size}";
 
     @Column(name = "email", nullable = false, unique = true)
     @Email
@@ -43,7 +45,7 @@ public class User extends AbstractNamedEntity {
 
     @Column(name = "password", nullable = false)
     @NotBlank
-    @Size(min = 5, max = 128)
+    @Size(min = 5, max = 128, message = PASSWORD_SIZE_EXCEPTION)
     // https://stackoverflow.com/a/12505165/548473
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;

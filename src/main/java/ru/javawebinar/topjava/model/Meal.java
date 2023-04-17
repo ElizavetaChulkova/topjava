@@ -9,7 +9,6 @@ import ru.javawebinar.topjava.View;
 import ru.javawebinar.topjava.util.DateTimeUtil;
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;

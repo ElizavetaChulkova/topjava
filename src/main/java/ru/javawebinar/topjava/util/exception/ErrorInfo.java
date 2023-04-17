@@ -6,12 +6,12 @@ public class ErrorInfo {
 
     private final String message;
 
-    private final String detail;
+    private final String[] details;
 
-    public ErrorInfo(CharSequence url, ErrorType type, String message, String detail) {
+    public ErrorInfo(CharSequence url, ErrorType type, String message, String[] details) {
         this.url = url.toString();
         this.type = type;
         this.message = message;
-        this.detail = detail;
+        this.details = details;
     }
 }
